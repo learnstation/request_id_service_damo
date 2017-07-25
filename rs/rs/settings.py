@@ -38,12 +38,11 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
-    'ec',
-    'log_request_id',
+    'ec'
 ]
 
-MIDDLEWARE = [
-    'log_request_id.middleware.RequestIDMiddleware',
+MIDDLEWARE_CLASSES = [
+    'log_request_id.middleware.RequestIDMiddleware'
 ]
 
 ROOT_URLCONF = 'rs.urls'
