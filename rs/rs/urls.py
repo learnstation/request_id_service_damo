@@ -19,6 +19,6 @@ from django.conf.urls import include
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'^api/', include('ec.api_urls')),
+    url(r'^api/nuri/aere/', include('ec.api_urls')),
     url(r'^static_url/', include('ec.static_urls')),
 ]

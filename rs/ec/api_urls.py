@@ -1,12 +1,20 @@
 # !/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from django.conf.urls import patterns, url
+from django.conf.urls import url
 
-from api.views import AddLogViews
+from ec.views import add_record_view
+from ec.views import test1_view
+from ec.views import test2_view
+from ec.views import test3_view
+from ec.views import test4_view
 
 
-urlpatterns = patterns(
-    'ec.views',
-    url(r'^add/$', AddLogViews.as_view()),
-)
+urlpatterns = [
+    url(r'^record/$', add_record_view, name='add_record_view'),
+
+    url(r'^test1/$', test1_view, name='test1_view'),
+    url(r'^test2/$', test2_view, name='test2_view'),
+    url(r'^test3/$', test3_view, name='test3_view'),
+    url(r'^test4/$', test4_view, name='test4_view')
+]
