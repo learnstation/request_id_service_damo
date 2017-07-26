@@ -22,6 +22,7 @@ CREATE TABLE IF NOT EXISTS `aere`.`request_record` (
   `request_data` LONGTEXT NOT NULL DEFAULT '' COMMENT '请求数据',
   `response_data` LONGTEXT NOT NULL DEFAULT '' COMMENT '返回数据',
   `taking` INT(11) NOT NULL COMMENT '耗时（毫秒）',
+  `child_num` INT NOT NULL DEFAULT 0 COMMENT '子节点个数',
   `create_time` INT(11) NOT NULL COMMENT '创建（unix时间戳）',
   PRIMARY KEY (`id`))
 ENGINE = InnoDB

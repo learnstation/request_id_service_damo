@@ -19,6 +19,7 @@ class RequestRecord(models.Model):
     request_data = models.TextField()
     response_data = models.TextField()
     taking = models.IntegerField()
+    child_num = models.IntegerField()
     create_time = models.IntegerField()
 
     class Meta:

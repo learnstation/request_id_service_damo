@@ -11,7 +11,7 @@ from rest_framework.renderers import JSONRenderer
 from rest_framework.response import Response
 
 
-def response_func(result=None, status=2000, message="", module="haishen"):
+def response_func(result=None, status=2000, message="", module="meari"):
     return Response({
         "status": status,
         "module": module,
@@ -67,6 +67,4 @@ def a(path, data):
         'path': path,
         'random': random.randint(0, 99)
     })
-    r = requests.get(url, params=data)
-    result = r.json()
-    print json.dumps(result, indent=4)
+    requests.get(url, params=data)
