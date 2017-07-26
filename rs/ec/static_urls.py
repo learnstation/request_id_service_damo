@@ -4,6 +4,7 @@
 from django.conf.urls import url
 from django.shortcuts import render
 from rest_framework.decorators import api_view
+from .views import record_view
 
 
 @api_view(['GET'])
@@ -12,5 +13,6 @@ def index_view(request):
 
 
 urlpatterns = [
-    url(r'^$', index_view, name='index_view')
+    url(r'^$', index_view, name='index_view'),
+    url(r'^record$', record_view, name='record_view')
 ]

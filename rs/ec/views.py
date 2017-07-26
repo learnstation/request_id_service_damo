@@ -4,11 +4,12 @@
 
 import requests
 import random
-import json
 
 from rest_framework.decorators import api_view, renderer_classes
 from rest_framework.renderers import JSONRenderer
 from rest_framework.response import Response
+
+from .models import RequestRecord
 
 
 def response_func(result=None, status=2000, message="", module="meari"):
@@ -22,9 +23,12 @@ def response_func(result=None, status=2000, message="", module="meari"):
 
 @api_view(['POST'])
 @renderer_classes((JSONRenderer, ))
-def add_record_view(request):
-    req_data = request.data()
-    return response_func(result=req_data)
+def record_view(request):
+    req_data = request.data
+    print req_data
+    obj_data = req_data
+    obj_id = RequestRecord.create_obj(**obj_data)
+    return response_func(result={"id": obj_id})
 
 
 @api_view(['GET'])
