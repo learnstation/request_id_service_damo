@@ -4,15 +4,17 @@
 
 import requests
 import random
+import json
 
 from rest_framework.decorators import api_view, renderer_classes
 from rest_framework.renderers import JSONRenderer
 from rest_framework.response import Response
+from django.forms import model_to_dict
 
 from .models import RequestRecord
 
 
-def response_func(result=None, status=2000, message="", module="meari"):
+def response_func(result=None, status=2000, message="", module="aera"):
     return Response({
         "status": status,
         "module": module,
@@ -72,3 +74,45 @@ def a(path, data):
         'random': random.randint(0, 99)
     })
     requests.get(url, params=data)
+
+
+@api_view(['GET'])
+@renderer_classes((JSONRenderer, ))
+def get_record_view(request):
+    parent_id = None
+    parent_record_id = request.query_params.dict().get("parent_record_id")
+    if parent_record_id:
+        record_db = RequestRecord.objects.filter(id=parent_record_id).first()
+        parent_id = record_db.current_id
+    back_dbs = RequestRecord.objects.filter(parent_id=parent_id).order_by("index_num").all()
+    result = []
+    for o in back_dbs:
+        obj = model_to_dict(o)
+        result.append(obj)
+    return response_func(result=result)
+
+
+@api_view(['GET'])
+@renderer_classes((JSONRenderer, ))
+def get_request_view(request):
+    record_id = request.query_params.dict().get("id")
+    record_db = RequestRecord.objects.filter(id=record_id).first()
+    request_data = record_db.request_data
+    result = ""
+    if request_data:
+        print request_data
+        print json.loads(request_data)
+        result = json.dumps(json.loads(request_data), indent=2)
+    return response_func(result=result)
+
+
+@api_view(['GET'])
+@renderer_classes((JSONRenderer, ))
+def get_response_view(request):
+    record_id = request.query_params.dict().get("id")
+    record_db = RequestRecord.objects.filter(id=record_id).first()
+    response_data = record_db.response_data
+    result = ""
+    if response_data:
+        result = json.dumps(json.loads(response_data), indent=2)
+    return response_func(result=result)

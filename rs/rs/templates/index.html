@@ -5,23 +5,158 @@
     <meta charset="utf-8" />
     <script src="/static/lib/jquery-3.2.1.min.js"></script>
     <script>
+        function cTime(unixtime) {
+            if (unixtime != "") {
+                commonTime = new Date(unixtime* 1000);
+                return commonTime.toLocaleString();
+            }
+            else{
+                return unixtime
+            }
+        }
         function get_request_data(did){
-            alert("detail request");
+            $.get("http://127.0.0.1:8000/request_data?id=" + did, function(result){
+                var s = result.result;
+                alert(s)
+            })
         }
         function get_response_data(did){
-            alert("detail response");
+            $.get("http://127.0.0.1:8000/response_data?id=" + did, function(result){
+                var s = result.result;
+                alert(s)
+            })
         }
-        function show_child(ts, did){
-            var tr = $(ts).parent().parent();
-            tr.after("<tr><td>--></td><td colspan=11>Hello table</td></tr>")
+        function f_show_child(ts, did, deep_num){
+          $(ts).hide();
+          var tr = $(ts).parent().parent();
+          $.get("http://127.0.0.1:8000/data?parent_record_id=" + did, function(result){
+            var data = result["result"];
+            var color = "#" + (9-deep_num) + (9-deep_num) + (9-deep_num) + (9-deep_num) + (9-deep_num) + (9-deep_num);
+            var child_html = ""//<tr><td>#</td><td colspan=11><table border='1' style='width: 100%;height:100%; background-color: " + color + "'>";
+            //child_html += "<thead><th>ID</th><th>层级</th><th>顺序号</th><th>请求方式</th><th>URL</th><th>模块</th><th>请求IP</th><th>HTTP状态码</th><th>绿盟云状态码</th><th>耗时(毫秒)</th><th>时间</th><th>操作</th></thead>";
+            for (var i = 0; i < data.length; i++) {
+                var d = data[i];
+                child_html += "<tr style='background-color: " + color + "'>\n";
+                child_html += "<td width='2%'>" + d.id + "</td>\n";
+                child_html += "<td width='5%'>" + d.deep_num + "</td>\n";
+                child_html += "<td width='5%'>" + d.index_num + "</td>\n";
+                child_html += "<td width='5%'>" + d.method + "</td>\n";
+                child_html += "<td width='15%'>" + d.path + "</td>\n";
+                child_html += "<td width='5%'>" + d.module + "</td>\n";
+                child_html += "<td width='10%'>" + d.remote_ip + "</td>\n";
+                child_html += "<td width='5%'>" + d.http_status + "</td>\n";
+                child_html += "<td width='5%'>" + d.nscloud_status + "</td>\n";
+                child_html += "<td width='5%'>" + d.taking + "</td>\n";
+                child_html += "<td width='17%'>" + cTime(d.create_time) + "</td>\n";
+                if (d.child_num == 0){
+                    child_html += "<td width='10%'>\n";
+                    child_html += "<a onclick='get_request_data(" + d.id + ")' style='font-size: 10px'>入参详请</a>\n";
+                    child_html += "<a onclick='get_response_data(" + d.id + ")' style='font-size: 10px'>返回详请</a>\n";
+                    child_html += "</td>\n";
+                }
+                else{
+                    child_html += "<td width='10%'>\n"
+                    child_html += "<a onclick='get_request_data(" + d.id + ")' style='font-size: 10px'>入参详请</a>\n";
+                    child_html += "<a onclick='get_response_data(" + d.id + ")' style='font-size: 10px'>返回详请</a>\n";
+                    child_html += "<a onclick='show_child(this, " + d.id + ", "+ d.deep_num +")' style='font-size: 10px'>展开子节点</a>\n";
+                    child_html += "</td>\n";
+                }
+                child_html += "</tr>\n";
+            }
+            //child_html += "</table></td></tr>";
+            tr.after(child_html);
+          });
+        }
+
+        function show_child(ts, did, deep_num){
+          $(ts).hide();
+          var tr = $(ts).parent().parent();
+          $.get("http://127.0.0.1:8000/data?parent_record_id=" + did, function(result){
+            var data = result["result"];
+            var color = "#" + (9-deep_num) + (9-deep_num) + (9-deep_num) + (9-deep_num) + (9-deep_num) + (9-deep_num);
+            var child_html = "<tr><td>#</td><td colspan=11><table border='1' style='width: 100%;height:100%; background-color: " + color + "'>";
+            child_html += "<thead><th>ID</th><th>层级</th><th>顺序号</th><th>请求方式</th><th>URL</th><th>模块</th><th>请求IP</th><th>HTTP状态码</th><th>绿盟云状态码</th><th>耗时(毫秒)</th><th>时间</th><th>操作</th></thead>";
+            for (var i = 0; i < data.length; i++) {
+                var d = data[i];
+                child_html += "<tr>\n";
+                child_html += "<td width='2%'>" + d.id + "</td>\n";
+                child_html += "<td width='5%'>" + d.deep_num + "</td>\n";
+                child_html += "<td width='5%'>" + d.index_num + "</td>\n";
+                child_html += "<td width='5%'>" + d.method + "</td>\n";
+                child_html += "<td width='15%'>" + d.path + "</td>\n";
+                child_html += "<td width='5%'>" + d.module + "</td>\n";
+                child_html += "<td width='10%'>" + d.remote_ip + "</td>\n";
+                child_html += "<td width='5%'>" + d.http_status + "</td>\n";
+                child_html += "<td width='5%'>" + d.nscloud_status + "</td>\n";
+                child_html += "<td width='5%'>" + d.taking + "</td>\n";
+                child_html += "<td width='17%'>" + cTime(d.create_time) + "</td>\n";
+                if (d.child_num == 0){
+                    child_html += "<td width='10%'>\n";
+                    child_html += "<a onclick='get_request_data(" + d.id + ")' style='font-size: 10px'>入参详请</a>\n";
+                    child_html += "<a onclick='get_response_data(" + d.id + ")' style='font-size: 10px'>返回详请</a>\n";
+                    child_html += "</td>\n";
+                }
+                else{
+                    child_html += "<td width='10%'>\n"
+                    child_html += "<a onclick='get_request_data(" + d.id + ")' style='font-size: 10px'>入参详请</a>\n";
+                    child_html += "<a onclick='get_response_data(" + d.id + ")' style='font-size: 10px'>返回详请</a>\n";
+                    child_html += "<a onclick='show_child(this, " + d.id + ", "+ d.deep_num +")' style='font-size: 10px'>展开子节点</a>\n";
+                    child_html += "</td>\n";
+                }
+                child_html += "</tr>\n";
+            }
+            child_html += "</table></td></tr>";
+            tr.after(child_html);
+          });
+        }
+
+        function init_data(){
+          $.get("http://127.0.0.1:8000/data", function(result){
+            var data = result["result"];
+            var init_html = "";
+            for (var i = 0; i < data.length; i++) {
+                var d = data[i];
+                init_html += "<tr>\n";
+                init_html += "<td width='2%'>" + d.id + "</td>\n";
+                init_html += "<td width='5%'>" + d.deep_num + "</td>\n";
+                init_html += "<td width='5%'>" + d.index_num + "</td>\n";
+                init_html += "<td width='5%'>" + d.method + "</td>\n";
+                init_html += "<td width='15%'>" + d.path + "</td>\n";
+                init_html += "<td width='5%'>" + d.module + "</td>\n";
+                init_html += "<td width='10%'>" + d.remote_ip + "</td>\n";
+                init_html += "<td width='5%'>" + d.http_status + "</td>\n";
+                init_html += "<td width='5%'>" + d.nscloud_status + "</td>\n";
+                init_html += "<td width='5%'>" + d.taking + "</td>\n";
+                init_html += "<td width='17%'>" + cTime(d.create_time) + "</td>\n";
+                if (d.child_num == 0){
+                    init_html += "<td width='10%'>\n";
+                    init_html += "<a onclick='get_request_data(" + d.id + ")' style='font-size: 10px'>入参详请</a>\n";
+                    init_html += "<a onclick='get_response_data(" + d.id + ")' style='font-size: 10px'>返回详请</a>\n";
+                    init_html += "</td>\n";
+                }
+                else{
+                    init_html += "<td width='10%'>\n"
+                    init_html += "<a onclick='get_request_data(" + d.id + ")' style='font-size: 10px'>入参详请</a>\n";
+                    init_html += "<a onclick='get_response_data(" + d.id + ")' style='font-size: 10px'>返回详请</a>\n";
+                    init_html += "<a onclick='show_child(this, " + d.id + ", "+ d.deep_num +")' style='font-size: 10px'>展开子节点</a>\n";
+                    init_html += "</td>\n";
+                }
+                init_html += "</tr>\n";
+            }
+            $("#table_thead").after(init_html);
+            $("#init_button").hide();
+          });
         }
     </script>
 </head>
 
 <body>
     <div id="main" style="width: 100%;height:100%;"></div>
+    </br>
+    <button id="init_button" onclick="init_data()"> 加载请求列表</button>
+    </br>
     <table border="1">
-        <thead>
+        <thead id="table_thead">
             <th>ID</th>
             <th>层级</th>
             <th>顺序号</th>
@@ -29,109 +164,12 @@
             <th>URL</th>
             <th>模块</th>
             <th>请求IP</th>
-            <th>HTTP Status</th>
-            <th>NSCLOUD Status</th>
+            <th>HTTP状态码</th>
+            <th>绿盟云状态码</th>
             <th>耗时(毫秒)</th>
             <th>时间</th>
             <th>操作</th>
         </thead>
-        <tr>
-            <td width="5%">12</td>
-            <td width="5%">1</td>
-            <td width="5%">2</td>
-            <td width="5%">Get</td>
-            <td width="25%">/api/nuri/aere/test4/</td>
-            <td width="5%">Nangka</td>
-            <td width="10%">10.5.24.144</td>
-            <td width="5%">200</td>
-            <td width="5%">2000</td>
-            <td width="5%">528</td>
-            <td width="17%">2017-11-11 11:11:11</td>
-            <td width="7%">
-                <a onclick="get_request_data(12)">rq</a>
-                <a onclick="get_response_data(12)">re</a>
-                <a onclick="show_child(this, 12)">ch</a>
-            </td>
-        </tr>
-        <tr>
-            <td width="5%">12</td>
-            <td width="5%">1</td>
-            <td width="5%">2</td>
-            <td width="5%">Get</td>
-            <td width="25%">/api/nuri/aere/test4/</td>
-            <td width="5%">Nangka</td>
-            <td width="10%">10.5.24.144</td>
-            <td width="5%">200</td>
-            <td width="5%">2000</td>
-            <td width="5%">528</td>
-            <td width="17%">2017-11-11 11:11:11</td>
-            <td width="7%">
-                <a onclick="get_request_data(12)">rq</a>
-                <a onclick="get_response_data(12)">re</a>
-                <a onclick="show_child(this, 12)">ch</a>
-            </td>
-        </tr>
-        <tr>
-            <td width="5%">12</td>
-            <td width="5%">1</td>
-            <td width="5%">2</td>
-            <td width="5%">Get</td>
-            <td width="25%">/api/nuri/aere/test4/</td>
-            <td width="5%">Nangka</td>
-            <td width="10%">10.5.24.144</td>
-            <td width="5%">200</td>
-            <td width="5%">2000</td>
-            <td width="5%">528</td>
-            <td width="17%">2017-11-11 11:11:11</td>
-            <td width="7%">
-                <a onclick="get_request_data(12)">rq</a>
-                <a onclick="get_response_data(12)">re</a>
-                <a onclick="show_child(this, 12)">ch</a>
-            </td>
-        </tr>
-        <tr>
-            <td>--></td>
-            <td colspan=11>
-                <table border="1" style="width: 100%;height:100%;">
-                    <tr>
-                        <td width="5%">12</td>
-                        <td width="5%">1</td>
-                        <td width="5%">2</td>
-                        <td width="5%">Get</td>
-                        <td width="25%">/api/nuri/aere/test4/</td>
-                        <td width="5%">Nangka</td>
-                        <td width="10%">10.5.24.144</td>
-                        <td width="5%">200</td>
-                        <td width="5%">2000</td>
-                        <td width="5%">528</td>
-                        <td width="17%">2017-11-11 11:11:11</td>
-                        <td width="7%">
-                            <a onclick="get_request_data(12)">rq</a>
-                            <a onclick="get_response_data(12)">re</a>
-                            <a onclick="show_child(this, 12)">ch</a>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td width="5%">12</td>
-                        <td width="5%">1</td>
-                        <td width="5%">2</td>
-                        <td width="5%">Get</td>
-                        <td width="25%">/api/nuri/aere/test4/</td>
-                        <td width="5%">Nangka</td>
-                        <td width="10%">10.5.24.144</td>
-                        <td width="5%">200</td>
-                        <td width="5%">2000</td>
-                        <td width="5%">528</td>
-                        <td width="17%">2017-11-11 11:11:11</td>
-                        <td width="7%">
-                            <a onclick="get_request_data(12)">rq</a>
-                            <a onclick="get_response_data(12)">re</a>
-                            <a onclick="show_child(this, 12)">ch</a>
-                        </td>
-                    </tr>
-                </table>
-            </td>
-        </tr>
     </table>
 </body>
 

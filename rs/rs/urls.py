@@ -20,5 +20,7 @@ from django.conf.urls import include
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^api/nuri/aere/', include('ec.api_urls')),
+    url(r'^api/krosa/aere/', include('ec.api_urls')),
+    url(r'^api/tembin/aere/', include('ec.api_urls')),
     url(r'^', include('ec.static_urls')),
 ]

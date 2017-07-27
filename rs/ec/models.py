@@ -14,7 +14,7 @@ def field_names(cls):
 
 class RequestRecord(models.Model):
     global_id = models.CharField(max_length=32)
-    parnet_id = models.CharField(max_length=32, blank=True, null=True)
+    parent_id = models.CharField(max_length=32, blank=True, null=True)
     current_id = models.CharField(max_length=32)
     deep_num = models.IntegerField()
     index_num = models.IntegerField()
@@ -23,6 +23,7 @@ class RequestRecord(models.Model):
     method = models.CharField(max_length=10)
     path = models.CharField(max_length=128)
     module = models.CharField(max_length=45)
+    api_type = models.CharField(max_length=16)
     remote_ip = models.CharField(max_length=64)
     request_data = models.TextField()
     response_data = models.TextField()
