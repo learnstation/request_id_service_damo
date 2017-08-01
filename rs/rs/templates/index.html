@@ -36,7 +36,7 @@
             for (var i = 0; i < data.length; i++) {
                 var d = data[i];
                 child_html += "<tr style='background-color: " + color + "'>\n";
-                child_html += "<td width='2%'>" + d.id + "</td>\n";
+                child_html += "<td width='8%'>" + d.id + "</td>\n";
                 child_html += "<td width='5%'>" + d.deep_num + "</td>\n";
                 child_html += "<td width='5%'>" + d.index_num + "</td>\n";
                 child_html += "<td width='5%'>" + d.method + "</td>\n";
@@ -46,7 +46,7 @@
                 child_html += "<td width='5%'>" + d.http_status + "</td>\n";
                 child_html += "<td width='5%'>" + d.nscloud_status + "</td>\n";
                 child_html += "<td width='5%'>" + d.taking + "</td>\n";
-                child_html += "<td width='17%'>" + cTime(d.create_time) + "</td>\n";
+                child_html += "<td width='11%'>" + cTime(d.create_time) + "</td>\n";
                 if (d.child_num == 0){
                     child_html += "<td width='10%'>\n";
                     child_html += "<a onclick='get_request_data(" + d.id + ")' style='font-size: 10px'>入参详请</a>\n";
@@ -77,7 +77,7 @@
             for (var i = 0; i < data.length; i++) {
                 var d = data[i];
                 child_html += "<tr>\n";
-                child_html += "<td width='2%'>" + d.id + "</td>\n";
+                child_html += "<td width='8%'>" + d.id + "</td>\n";
                 child_html += "<td width='5%'>" + d.deep_num + "</td>\n";
                 child_html += "<td width='5%'>" + d.index_num + "</td>\n";
                 child_html += "<td width='5%'>" + d.method + "</td>\n";
@@ -87,7 +87,7 @@
                 child_html += "<td width='5%'>" + d.http_status + "</td>\n";
                 child_html += "<td width='5%'>" + d.nscloud_status + "</td>\n";
                 child_html += "<td width='5%'>" + d.taking + "</td>\n";
-                child_html += "<td width='17%'>" + cTime(d.create_time) + "</td>\n";
+                child_html += "<td width='11%'>" + cTime(d.create_time) + "</td>\n";
                 if (d.child_num == 0){
                     child_html += "<td width='10%'>\n";
                     child_html += "<a onclick='get_request_data(" + d.id + ")' style='font-size: 10px'>入参详请</a>\n";
